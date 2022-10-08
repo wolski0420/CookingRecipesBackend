@@ -7,6 +7,7 @@ COPY ./mvnw mvnw
 COPY ./mvnw.cmd mvnw.cmd
 COPY ./pom.xml pom.xml
 
+RUN chmod +x mvnw
 RUN ./mvnw clean package
 RUN cp ./target/CookingRecipesBackend-0.0.1-SNAPSHOT.jar app.jar
 
