@@ -71,6 +71,7 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <mainClass>com.app.cooking.recipes.backend.CookingRecipesBackendApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
