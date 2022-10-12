@@ -10,20 +10,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
+import java.util.Optional;
 
 @SpringBootApplication
 public class CookingRecipesBackendApplication {
 
     public static void main(String[] args) throws IOException {
         ClassLoader classLoader = CookingRecipesBackendApplication.class.getClassLoader();
-
         URL credentialsUrl = classLoader.getResource("serviceAccountKey.json");
-        if (credentialsUrl == null) {
-            credentialsUrl = classLoader.getResource("mo-data/serviceAccountKey.json");
-        }
 
-        File file = new File(Objects.requireNonNull(credentialsUrl).getFile());
+        String urlForFile = Optional.ofNullable(credentialsUrl)
+                .map(URL::getFile)
+                .orElse("/mo-data/serviceAccountKey.json");
+
+        File file = new File(urlForFile);
         FileInputStream serviceAccount = new FileInputStream(file.getAbsolutePath());
 
         FirebaseOptions options = new FirebaseOptions.Builder()
