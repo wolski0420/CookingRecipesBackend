@@ -31,11 +31,7 @@ public class CookingRecipesBackendApplication {
                 .setDatabaseUrl("https://cookingrecipes-793c3.firebaseio.com")
                 .build();
 
-        if (FirebaseApp.getApps().isEmpty()) {
-            FirebaseApp.initializeApp(options, "appName");
-        } else {
-            FirebaseApp.initializeApp(options);
-        }
+        FirebaseApp.initializeApp(options, "appName");
 
         SpringApplication.run(CookingRecipesBackendApplication.class, args);
     }
