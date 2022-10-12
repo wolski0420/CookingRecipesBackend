@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Objects;
 
 @SpringBootApplication
@@ -17,7 +18,12 @@ public class CookingRecipesBackendApplication {
     public static void main(String[] args) throws IOException {
         ClassLoader classLoader = CookingRecipesBackendApplication.class.getClassLoader();
 
-        File file = new File(Objects.requireNonNull(classLoader.getResource("serviceAccountKey.json")).getFile());
+        URL credentialsUrl = classLoader.getResource("serviceAccountKey.json");
+        if (credentialsUrl == null) {
+            credentialsUrl = classLoader.getResource("/mo-data/serviceAccountKey.json");
+        }
+
+        File file = new File(Objects.requireNonNull(credentialsUrl).getFile());
         FileInputStream serviceAccount = new FileInputStream(file.getAbsolutePath());
 
         FirebaseOptions options = new FirebaseOptions.Builder()
