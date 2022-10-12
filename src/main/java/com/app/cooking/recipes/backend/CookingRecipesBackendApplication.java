@@ -20,7 +20,7 @@ public class CookingRecipesBackendApplication {
 
         URL credentialsUrl = classLoader.getResource("serviceAccountKey.json");
         if (credentialsUrl == null) {
-            credentialsUrl = classLoader.getResource("/mo-data/serviceAccountKey.json");
+            credentialsUrl = classLoader.getResource("mo-data/serviceAccountKey.json");
         }
 
         File file = new File(Objects.requireNonNull(credentialsUrl).getFile());
