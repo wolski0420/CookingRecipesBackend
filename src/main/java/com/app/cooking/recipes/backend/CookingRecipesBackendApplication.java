@@ -32,9 +32,9 @@ public class CookingRecipesBackendApplication {
                 .build();
 
         if (FirebaseApp.getApps().isEmpty()) {
-            FirebaseApp.initializeApp(options);
-        } else {
             FirebaseApp.initializeApp(options, "appName");
+        } else {
+            FirebaseApp.initializeApp(options);
         }
 
         SpringApplication.run(CookingRecipesBackendApplication.class, args);
