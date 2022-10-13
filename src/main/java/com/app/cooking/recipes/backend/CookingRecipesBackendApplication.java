@@ -22,8 +22,11 @@ public class CookingRecipesBackendApplication {
             ClassPathResource serviceAccount = new ClassPathResource("serviceAccountKey.json");
 
             if (!serviceAccount.exists()) {
-                serviceAccount = new ClassPathResource("../../../../mo-data/serviceAccountKey.json");
+                serviceAccount = new ClassPathResource("../../../../../mo-data/serviceAccountKey.json");
             }
+
+            System.out.println(serviceAccount.getURL());
+            System.out.println(serviceAccount.getURI());
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount.getInputStream()))
