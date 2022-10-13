@@ -10,7 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.ClassPathResource;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 @SpringBootApplication
 public class CookingRecipesBackendApplication {
@@ -21,27 +24,25 @@ public class CookingRecipesBackendApplication {
     @PostConstruct
     public void initializeFirebase() {
         try {
-            ClassPathResource serviceAccount = new ClassPathResource("serviceAccountKey.json");
-
             Logger logger = LoggerFactory.getLogger(CookingRecipesBackendApplication.class);
-//            logger.info(serviceAccount.getURL().toString());
-//            logger.info(serviceAccount.getURI().toString());
 
-            if (!serviceAccount.exists()) {
-                serviceAccount = new ClassPathResource("../../../../../../../mo-data/serviceAccountKey.json");
-//                logger.info("if: " + serviceAccount.getURL());
-//                logger.info("if: " + serviceAccount.getURI());
+            ClassPathResource serviceAccount = new ClassPathResource("serviceAccountKey.json");
+            InputStream inputStream;
+            if (serviceAccount.exists()) {
+                inputStream = serviceAccount.getInputStream();
+                logger.info("Location of json file - " + serviceAccount.getURL());
+            } else {
+                File file = new File("/mo-data/serviceAccountKey.json");
+                logger.info("Location of json file - " + file.getAbsolutePath());
+                inputStream = new FileInputStream(file);
             }
 
-//            logger.info(serviceAccount.getURL().toString());
-//            logger.info(serviceAccount.getURI().toString());
-
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount.getInputStream()))
+                    .setCredentials(GoogleCredentials.fromStream(inputStream))
                     .setDatabaseUrl("https://cookingrecipes-793c3.firebaseio.com")
                     .build();
 
-            FirebaseApp.initializeApp(options, "cookingRecipes");
+            FirebaseApp.initializeApp(options, "cookingRecipesBackend");
         } catch (IOException e) {
             e.printStackTrace();
         }
