@@ -5,35 +5,34 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.io.ClassPathResource;
 
-import java.io.File;
-import java.io.FileInputStream;
+import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Optional;
 
 @SpringBootApplication
 public class CookingRecipesBackendApplication {
-
-    public static void main(String[] args) throws IOException {
-        ClassLoader classLoader = CookingRecipesBackendApplication.class.getClassLoader();
-        URL credentialsUrl = classLoader.getResource("serviceAccountKey.json");
-
-        String urlForFile = Optional.ofNullable(credentialsUrl)
-                .map(URL::getFile)
-                .orElse("/mo-data/serviceAccountKey.json");
-
-        File file = new File(urlForFile);
-        FileInputStream serviceAccount = new FileInputStream(file.getAbsolutePath());
-
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl("https://cookingrecipes-793c3.firebaseio.com")
-                .build();
-
-        FirebaseApp.initializeApp(options, "appName");
-
+    public static void main(String[] args) {
         SpringApplication.run(CookingRecipesBackendApplication.class, args);
     }
 
+    @PostConstruct
+    public void initializeFirebase() {
+        try {
+            ClassPathResource serviceAccount = new ClassPathResource("serviceAccountKey.json");
+
+            if (!serviceAccount.exists()) {
+                serviceAccount = new ClassPathResource("../../../../mo-data/serviceAccountKey.json");
+            }
+
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount.getInputStream()))
+                    .setDatabaseUrl("https://cookingrecipes-793c3.firebaseio.com")
+                    .build();
+
+            FirebaseApp.initializeApp(options, "cookingRecipes");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
