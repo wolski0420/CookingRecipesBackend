@@ -42,7 +42,11 @@ public class CookingRecipesBackendApplication {
                     .setDatabaseUrl("https://cookingrecipes-793c3.firebaseio.com")
                     .build();
 
-            FirebaseApp.initializeApp(options, "cookingRecipesBackend");
+            if (FirebaseApp.getApps().isEmpty()) {
+                FirebaseApp.initializeApp(options, "cookingRecipesBackend");
+            } else {
+                FirebaseApp.initializeApp(options);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
