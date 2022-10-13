@@ -24,17 +24,17 @@ public class CookingRecipesBackendApplication {
             ClassPathResource serviceAccount = new ClassPathResource("serviceAccountKey.json");
 
             Logger logger = LoggerFactory.getLogger(CookingRecipesBackendApplication.class);
-            logger.info(serviceAccount.getURL().toString());
-            logger.info(serviceAccount.getURI().toString());
+//            logger.info(serviceAccount.getURL().toString());
+//            logger.info(serviceAccount.getURI().toString());
 
             if (!serviceAccount.exists()) {
                 serviceAccount = new ClassPathResource("../../../../../../mo-data/serviceAccountKey.json");
-                logger.info("if: " + serviceAccount.getURL());
-                logger.info("if: " + serviceAccount.getURI());
+//                logger.info("if: " + serviceAccount.getURL());
+//                logger.info("if: " + serviceAccount.getURI());
             }
 
-            logger.info(serviceAccount.getURL().toString());
-            logger.info(serviceAccount.getURI().toString());
+//            logger.info(serviceAccount.getURL().toString());
+//            logger.info(serviceAccount.getURI().toString());
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount.getInputStream()))
