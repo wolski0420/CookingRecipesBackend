@@ -23,11 +23,16 @@ public class CookingRecipesBackendApplication {
         try {
             ClassPathResource serviceAccount = new ClassPathResource("serviceAccountKey.json");
 
+            Logger logger = LoggerFactory.getLogger(CookingRecipesBackendApplication.class);
+            logger.info(serviceAccount.getURL().toString());
+            logger.info(serviceAccount.getURI().toString());
+
             if (!serviceAccount.exists()) {
                 serviceAccount = new ClassPathResource("../../../../../mo-data/serviceAccountKey.json");
+                logger.info("if: " + serviceAccount.getURL());
+                logger.info("if: " + serviceAccount.getURI());
             }
 
-            Logger logger = LoggerFactory.getLogger(CookingRecipesBackendApplication.class);
             logger.info(serviceAccount.getURL().toString());
             logger.info(serviceAccount.getURI().toString());
 
