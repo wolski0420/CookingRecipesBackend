@@ -28,7 +28,7 @@ public class CookingRecipesBackendApplication {
 //            logger.info(serviceAccount.getURI().toString());
 
             if (!serviceAccount.exists()) {
-                serviceAccount = new ClassPathResource("../../../../../../mo-data/serviceAccountKey.json");
+                serviceAccount = new ClassPathResource("../../../../../../../mo-data/serviceAccountKey.json");
 //                logger.info("if: " + serviceAccount.getURL());
 //                logger.info("if: " + serviceAccount.getURI());
             }
