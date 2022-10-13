@@ -34,7 +34,7 @@ public class CookingRecipesBackendApplication {
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setDatabaseUrl("https://cookingrecipes-793c3.firebaseio.com")
+                    .setDatabaseUrl("https://cookingrecipesapp-3f1e1.firebaseio.com")
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {
