@@ -3,6 +3,8 @@ package com.app.cooking.recipes.backend;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.ClassPathResource;
@@ -25,8 +27,9 @@ public class CookingRecipesBackendApplication {
                 serviceAccount = new ClassPathResource("../../../../../mo-data/serviceAccountKey.json");
             }
 
-            System.out.println(serviceAccount.getURL());
-            System.out.println(serviceAccount.getURI());
+            Logger logger = LoggerFactory.getLogger(CookingRecipesBackendApplication.class);
+            logger.info(serviceAccount.getURL().toString());
+            logger.info(serviceAccount.getURI().toString());
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount.getInputStream()))
