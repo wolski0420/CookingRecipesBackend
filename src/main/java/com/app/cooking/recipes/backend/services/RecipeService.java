@@ -1,65 +1,40 @@
 package com.app.cooking.recipes.backend.services;
 
 import com.app.cooking.recipes.backend.model.Recipe;
-import com.app.cooking.recipes.backend.model.RecipeForm;
-import com.google.firebase.cloud.FirestoreClient;
+import com.app.cooking.recipes.backend.repository.RecipeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.ExecutionException;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class RecipeService {
-    private static final String collectionName = "recipes";
+    private final RecipeRepository repository;
 
-    public Optional<Recipe> getById(String id) {
-        Recipe recipeToReturn = null;
+    @Autowired
+    public RecipeService(RecipeRepository repository) {
+        this.repository = repository;
+    }
 
-        try {
-            recipeToReturn = FirestoreClient.getFirestore().collection(collectionName).document(id).get().get().toObject(Recipe.class);
-            recipeToReturn.setDocumentId(id);
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return Optional.ofNullable(recipeToReturn);
+    public Optional<Recipe> getById(UUID id) {
+        return repository.findById(id);
     }
 
     public List<Recipe> getAll() {
-        List<Recipe> recipes = new ArrayList<>();
-
-        FirestoreClient.getFirestore().collection(collectionName).listDocuments().forEach(documentReference -> {
-            try {
-                Recipe recipeToPrint = documentReference.get().get().toObject(Recipe.class);
-                recipeToPrint.setDocumentId(documentReference.getId());
-                recipes.add(recipeToPrint);
-                documentReference.getId();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        });
-
-        return recipes;
+        return repository.findAll();
     }
 
     public Optional<Recipe> getByName(String name) {
-        return getAll().stream()
-                .filter(recipe -> recipe.getName().equals(name))
-                .findAny();
+        return repository.findByName(name);
     }
 
-    public void saveNew(RecipeForm recipeForm) {
-        FirestoreClient.getFirestore().collection(collectionName).add(recipeForm);
-    }
-
-    public void updateExisting(Recipe recipe) {
-        FirestoreClient.getFirestore().collection(collectionName).document(recipe.getDocumentId())
-                .update("name", recipe.getName(),
-                        "description", recipe.getDescription(),
-                        "ingredients", recipe.getIngredients());
+    public void saveNewOrUpdateExisting(Recipe recipe) {
+        repository.saveAndFlush(recipe);
     }
 
     public void delete(Recipe recipe) {
-        FirestoreClient.getFirestore().collection(collectionName).document(recipe.getDocumentId()).delete();
+        repository.delete(recipe);
     }
 }
