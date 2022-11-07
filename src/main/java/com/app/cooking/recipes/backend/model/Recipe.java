@@ -19,6 +19,7 @@ public class Recipe {
     private UUID id;
     @Column(unique = true, nullable = false)
     private String name;
+    private String imageUrl;
     private String ingredients;
     private String description;
 }

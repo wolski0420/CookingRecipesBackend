@@ -35,6 +35,7 @@ public class RecipeController {
 
         recipeService.saveNewOrUpdateExisting(Recipe.builder()
                 .name(recipeData.getName())
+                .imageUrl(recipeData.getImageUrl())
                 .ingredients(String.join(ingredientsDelimiter, recipeData.getIngredients()))
                 .description(recipeData.getDescription())
                 .build());
@@ -51,6 +52,7 @@ public class RecipeController {
         recipeService.saveNewOrUpdateExisting(Recipe.builder()
                 .id(id)
                 .name(recipeData.getName())
+                .imageUrl(recipeData.getImageUrl())
                 .ingredients(String.join(ingredientsDelimiter, recipeData.getIngredients()))
                 .description(recipeData.getDescription())
                 .build());
@@ -63,6 +65,7 @@ public class RecipeController {
                 .map(recipe -> RecipeData.builder()
                         .id(recipe.getId().toString())
                         .name(recipe.getName())
+                        .imageUrl(recipe.getImageUrl())
                         .ingredients(Arrays.asList(recipe.getIngredients().split(ingredientsDelimiter)))
                         .description(recipe.getDescription())
                         .build())
@@ -86,6 +89,7 @@ public class RecipeController {
     static class RecipeData {
         private String id = "";
         private String name;
+        private String imageUrl;
         private List<String> ingredients;
         private String description;
     }
