@@ -2,18 +2,15 @@ package com.app.cooking.recipes.backend.model;
 
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Recipe {
+public class Category {
     private String documentId;
-    private String categoryId;
     private String name;
-    private String imageUrl;
-    private List<String> ingredients;
-    private String description;
+    private CategoryType type;
 }
+
+

@@ -13,16 +13,15 @@ public class RecipeService {
     private static final String collectionName = "recipes";
 
     public Optional<Recipe> getById(String id) {
-        Recipe recipeToReturn = null;
-
         try {
-            recipeToReturn = FirestoreClient.getFirestore().collection(collectionName).document(id).get().get().toObject(Recipe.class);
-            recipeToReturn.setDocumentId(id);
+            return Optional.ofNullable(FirestoreClient.getFirestore().collection(collectionName).document(id).get().get().toObject(Recipe.class))
+                    .map(recipe -> {
+                        recipe.setDocumentId(id);
+                        return recipe;
+                    });
         } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
+            return Optional.empty();
         }
-
-        return Optional.ofNullable(recipeToReturn);
     }
 
     public List<Recipe> getAll() {
@@ -30,13 +29,12 @@ public class RecipeService {
 
         FirestoreClient.getFirestore().collection(collectionName).listDocuments().forEach(documentReference -> {
             try {
-                Recipe recipeToPrint = documentReference.get().get().toObject(Recipe.class);
-                recipeToPrint.setDocumentId(documentReference.getId());
-                recipes.add(recipeToPrint);
-                documentReference.getId();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
+                Optional.ofNullable(documentReference.get().get().toObject(Recipe.class))
+                        .ifPresent(recipe -> {
+                            recipe.setDocumentId(documentReference.getId());
+                            recipes.add(recipe);
+                        });
+            } catch (InterruptedException | ExecutionException ignored) {}
         });
 
         return recipes;
@@ -55,6 +53,8 @@ public class RecipeService {
     public void updateExisting(Recipe recipe) {
         FirestoreClient.getFirestore().collection(collectionName).document(recipe.getDocumentId())
                 .update("name", recipe.getName(),
+                        "categoryId", recipe.getCategoryId(),
+                        "imageUrl", recipe.getImageUrl(),
                         "description", recipe.getDescription(),
                         "ingredients", recipe.getIngredients());
     }

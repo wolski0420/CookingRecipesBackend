@@ -17,7 +17,7 @@ public class SecurityConfiguration {
                 .cors()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/recipe")
+                .antMatchers("/recipe", "/category")
                 .permitAll()
                 .antMatchers("/", "/**")
                 .denyAll()
@@ -26,8 +26,6 @@ public class SecurityConfiguration {
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.headers().frameOptions().disable();
 
         return http.build();
     }

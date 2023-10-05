@@ -10,7 +10,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeForm {
+    private String categoryId;
     private String name;
+    private String imageUrl;
     private List<String> ingredients;
     private String description;
 }

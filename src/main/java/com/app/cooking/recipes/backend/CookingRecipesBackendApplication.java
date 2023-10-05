@@ -7,11 +7,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Optional;
 
 @SpringBootApplication
 public class CookingRecipesBackendApplication {
@@ -22,26 +19,14 @@ public class CookingRecipesBackendApplication {
     @PostConstruct
     public void initializeFirebase() {
         try {
-            ClassLoader classLoader = CookingRecipesBackendApplication.class.getClassLoader();
-            URL credentialsUrl = classLoader.getResource("serviceAccountKey.json");
+            FileInputStream serviceAccount = new FileInputStream("serviceAccountKey.json");
 
-            String urlForFile = Optional.ofNullable(credentialsUrl)
-                    .map(URL::getFile)
-                    .orElse("/mo-data/serviceAccountKey.json");
-
-            File file = new File(urlForFile);
-            FileInputStream serviceAccount = new FileInputStream(file.getAbsolutePath());
-
-            FirebaseOptions options = new FirebaseOptions.Builder()
+            FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .setDatabaseUrl("https://cookingrecipesapp-3f1e1.firebaseio.com")
                     .build();
 
-            if (FirebaseApp.getApps().isEmpty()) {
-                FirebaseApp.initializeApp(options, "appName");
-            } else {
-                FirebaseApp.initializeApp(options);
-            }
+            FirebaseApp.initializeApp(options);
         } catch (IOException e) {
             e.printStackTrace();
         }
