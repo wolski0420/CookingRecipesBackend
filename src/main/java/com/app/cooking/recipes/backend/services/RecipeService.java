@@ -56,7 +56,8 @@ public class RecipeService {
                         "categoryId", recipe.getCategoryId(),
                         "imageUrl", recipe.getImageUrl(),
                         "description", recipe.getDescription(),
-                        "ingredients", recipe.getIngredients());
+                        "ingredients", recipe.getIngredients(),
+                        "creationDate", recipe.getCreationDate());
     }
 
     public void delete(Recipe recipe) {

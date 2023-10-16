@@ -16,4 +16,5 @@ public class Recipe {
     private String imageUrl;
     private List<String> ingredients;
     private String description;
+    private String creationDate;
 }
