@@ -57,6 +57,7 @@ public class RecipeService {
                         "imageUrl", recipe.getImageUrl(),
                         "description", recipe.getDescription(),
                         "ingredients", recipe.getIngredients(),
+                        "ingredientGroups", recipe.getIngredientGroups(),
                         "creationDate", recipe.getCreationDate());
     }
 

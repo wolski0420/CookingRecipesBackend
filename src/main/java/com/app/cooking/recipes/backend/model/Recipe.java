@@ -15,6 +15,7 @@ public class Recipe {
     private String name;
     private String imageUrl;
     private List<String> ingredients;
+    private List<IngredientGroup> ingredientGroups;
     private String description;
     private String creationDate;
 }
