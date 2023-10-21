@@ -2,14 +2,17 @@ package com.app.cooking.recipes.backend.services;
 
 import com.app.cooking.recipes.backend.model.Recipe;
 import com.app.cooking.recipes.backend.model.RecipeForm;
+import com.app.cooking.recipes.backend.utils.LocalRepository;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Service
-public class RecipeService {
+public class RecipeService implements LocalRepository {
     private static final String collectionName = "recipes";
 
     public Optional<Recipe> getById(String id) {
@@ -63,5 +66,15 @@ public class RecipeService {
 
     public void delete(Recipe recipe) {
         FirestoreClient.getFirestore().collection(collectionName).document(recipe.getDocumentId()).delete();
+    }
+
+    @PostConstruct
+    private void init() {
+        dumpDBToJson("recipes_onInit", getAll());
+    }
+
+    @PreDestroy
+    private void destroy() {
+        dumpDBToJson("recipes_onDestroy", getAll());
     }
 }

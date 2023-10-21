@@ -2,16 +2,19 @@ package com.app.cooking.recipes.backend.services;
 
 import com.app.cooking.recipes.backend.model.Category;
 import com.app.cooking.recipes.backend.model.CategoryForm;
+import com.app.cooking.recipes.backend.utils.LocalRepository;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 @Service
-public class CategoryService {
+public class CategoryService implements LocalRepository {
     private static final String collectionName = "categories";
 
     public List<Category> getAll() {
@@ -44,5 +47,15 @@ public class CategoryService {
 
     public void saveNew(CategoryForm categoryForm) {
         FirestoreClient.getFirestore().collection(collectionName).add(categoryForm);
+    }
+
+    @PostConstruct
+    private void init() {
+        dumpDBToJson("categories_onInit", getAll());
+    }
+
+    @PreDestroy
+    private void destroy() {
+        dumpDBToJson("categories_onDestroy", getAll());
     }
 }
