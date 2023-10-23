@@ -5,12 +5,14 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PostConstruct;
 import java.io.FileInputStream;
 import java.io.IOException;
 
 @SpringBootApplication
+@EnableScheduling
 public class CookingRecipesBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(CookingRecipesBackendApplication.class, args);

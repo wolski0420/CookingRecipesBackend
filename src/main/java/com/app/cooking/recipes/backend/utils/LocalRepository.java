@@ -3,11 +3,14 @@ package com.app.cooking.recipes.backend.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public interface LocalRepository {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -23,5 +26,13 @@ public interface LocalRepository {
             System.out.println(gson.toJson(objects));
             throw new RuntimeException(e);
         }
+    }
+
+    default void clearLastDBDump(String prefix) {
+        Optional.of(new File("."))
+                .map(dir -> dir.listFiles((file, name) -> name.contains(prefix)))
+                .stream()
+                .flatMap(Arrays::stream)
+                .forEach(File::delete);
     }
 }

@@ -4,6 +4,7 @@ import com.app.cooking.recipes.backend.model.Category;
 import com.app.cooking.recipes.backend.model.CategoryForm;
 import com.app.cooking.recipes.backend.utils.LocalRepository;
 import com.google.firebase.cloud.FirestoreClient;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class CategoryService implements LocalRepository {
@@ -52,6 +54,14 @@ public class CategoryService implements LocalRepository {
     @PostConstruct
     private void init() {
         dumpDBToJson("categories_onInit", getAll());
+    }
+
+    @Scheduled(initialDelayString = "${categories.db.dump.initial.delay.seconds:21600}",
+            fixedRateString = "${categories.db.dump.fixed.rate.seconds:21600}",
+            timeUnit = TimeUnit.SECONDS)
+    private void cronDump() {
+        clearLastDBDump("categories_cronDump");
+        dumpDBToJson("categories_cronDump", getAll());
     }
 
     @PreDestroy
