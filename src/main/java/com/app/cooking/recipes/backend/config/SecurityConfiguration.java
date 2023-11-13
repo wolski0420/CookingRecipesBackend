@@ -38,6 +38,8 @@ public class SecurityConfiguration {
                 .hasAnyRole("EDIT", "ADMIN")
                 .antMatchers("/user")
                 .hasRole("ADMIN")
+                .antMatchers("/login")
+                .permitAll()
                 .anyRequest()
                 .denyAll()
                 .and()
