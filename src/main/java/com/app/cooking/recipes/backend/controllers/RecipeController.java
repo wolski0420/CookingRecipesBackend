@@ -38,12 +38,16 @@ public class RecipeController {
 
     @PutMapping
     public ResponseEntity<?> updateRecipe(@RequestBody Recipe recipe) {
-        Optional<Recipe> recipeInstance = recipeService.getById(recipe.getDocumentId());
-
-        if (recipeInstance.isEmpty()) {
+        if (recipeService.getById(recipe.getDocumentId()).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Recipe with given ID does not exist!");
         } else if (categoryService.getById(recipe.getCategoryId()).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Category with ID given in Recipe does not exist! Cannot update with non existing category!");
+        }
+
+        Optional<Recipe> recipeInstanceByName = recipeService.getByName(recipe.getName());
+
+        if (recipeInstanceByName.isPresent() && !recipeInstanceByName.get().getDocumentId().equals(recipe.getDocumentId())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Recipe with proposed name already exists!");
         }
 
         recipeService.updateExisting(recipe);

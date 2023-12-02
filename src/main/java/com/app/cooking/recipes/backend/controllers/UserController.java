@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping(path = "/user", produces = "application/json")
 @CrossOrigin(origins = "*")
@@ -38,6 +40,12 @@ public class UserController {
     public ResponseEntity<?> updateUser(@RequestBody User user) {
         if (userService.getById(user.getDocumentId()).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User with given ID does not exist!");
+        }
+
+        Optional<User> userInstanceByUserName = userService.getByUsername(user.getUsername());
+
+        if (userInstanceByUserName.isPresent() && !userInstanceByUserName.get().getDocumentId().equals(user.getDocumentId())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with proposed username already exists!");
         }
 
         userService.updateExisting(user);
