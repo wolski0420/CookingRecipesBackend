@@ -48,6 +48,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with proposed username already exists!");
         }
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         userService.updateExisting(user);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }

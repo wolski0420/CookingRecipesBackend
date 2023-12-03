@@ -1,4 +1,3 @@
 ### @TODO
 
-- users view for admin,
-- own settings view
+- users view for admin
