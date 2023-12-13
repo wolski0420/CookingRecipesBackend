@@ -2,7 +2,9 @@ package com.app.cooking.recipes.backend.controllers;
 
 import com.app.cooking.recipes.backend.model.User;
 import com.app.cooking.recipes.backend.model.UserForm;
+import com.app.cooking.recipes.backend.model.UserRole;
 import com.app.cooking.recipes.backend.services.UserService;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,26 +39,40 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateUser(@RequestBody User user, Principal loggedUser) {
-        Optional<User> loggedInUser = userService.getByUsername(loggedUser.getName());
-        if (loggedInUser.isEmpty() || !loggedInUser.get().getDocumentId().equals(user.getDocumentId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot update different user!");
-        }
-
-        Optional<User> userInstanceById = userService.getById(user.getDocumentId());
+    @PutMapping("/role")
+    public ResponseEntity<?> updateUserRole(@RequestBody UserRoleReq userRoleReq) {
+        Optional<User> userInstanceById = userService.getById(userRoleReq.getDocumentId());
         if (userInstanceById.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User with given ID does not exist!");
         }
 
-        Optional<User> userInstanceByUserName = userService.getByUsername(user.getUsername());
-        if (userInstanceByUserName.isPresent() && !userInstanceByUserName.get().getDocumentId().equals(user.getDocumentId())) {
+        User user = userInstanceById.get();
+        user.setUserRole(userRoleReq.getUserRole());
+
+        userService.updateExisting(user);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @PutMapping("/data")
+    public ResponseEntity<?> updateUserData(@RequestBody UserDataReq userDataReq, Principal loggedUser) {
+        Optional<User> loggedInUser = userService.getByUsername(loggedUser.getName());
+        if (loggedInUser.isEmpty() || !loggedInUser.get().getDocumentId().equals(userDataReq.documentId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot update different user data!");
+        }
+
+        Optional<User> userInstanceById = userService.getById(userDataReq.getDocumentId());
+        if (userInstanceById.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User with given ID does not exist!");
+        }
+
+        Optional<User> userInstanceByUserName = userService.getByUsername(userDataReq.getUsername());
+        if (userInstanceByUserName.isPresent() && !userInstanceByUserName.get().getDocumentId().equals(userDataReq.getDocumentId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with proposed username already exists!");
         }
 
-        if (!userInstanceById.get().getPassword().equals(user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
+        User user = userInstanceById.get();
+        user.setUsername(userDataReq.getUsername());
+        user.setPassword(passwordEncoder.encode(userDataReq.getPassword()));
 
         userService.updateExisting(user);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
@@ -75,5 +91,26 @@ public class UserController {
 
         userService.delete(user);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserDataReq {
+        private String documentId;
+        private String username;
+        private String password;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserRoleReq {
+        private String documentId;
+        private UserRole userRole;
     }
 }
