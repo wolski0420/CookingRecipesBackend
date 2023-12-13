@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @RestController
@@ -37,18 +38,25 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateUser(@RequestBody User user) {
-        if (userService.getById(user.getDocumentId()).isEmpty()) {
+    public ResponseEntity<?> updateUser(@RequestBody User user, Principal loggedUser) {
+        Optional<User> loggedInUser = userService.getByUsername(loggedUser.getName());
+        if (loggedInUser.isEmpty() || !loggedInUser.get().getDocumentId().equals(user.getDocumentId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot update different user!");
+        }
+
+        Optional<User> userInstanceById = userService.getById(user.getDocumentId());
+        if (userInstanceById.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User with given ID does not exist!");
         }
 
         Optional<User> userInstanceByUserName = userService.getByUsername(user.getUsername());
-
         if (userInstanceByUserName.isPresent() && !userInstanceByUserName.get().getDocumentId().equals(user.getDocumentId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with proposed username already exists!");
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (!userInstanceById.get().getPassword().equals(user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
 
         userService.updateExisting(user);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
