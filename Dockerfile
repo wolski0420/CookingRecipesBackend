@@ -9,7 +9,7 @@ COPY ./pom.xml pom.xml
 
 RUN sed -i 's/\r$//' mvnw
 RUN chmod +x mvnw
-RUN ./mvnw clean package
+RUN ./mvnw clean -Dspring.profiles.active=prod package
 RUN cp ./target/CookingRecipesBackend-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
