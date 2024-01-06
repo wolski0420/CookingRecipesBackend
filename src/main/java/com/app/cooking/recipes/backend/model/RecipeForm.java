@@ -9,8 +9,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Recipe {
-    private String documentId;
+public class RecipeForm {
     private String categoryId;
     private String name;
     private String imageUrl;
